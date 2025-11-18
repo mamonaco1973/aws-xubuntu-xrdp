@@ -51,6 +51,18 @@ resource "aws_instance" "efs_client_instance" {
   instance_type = "t3.medium"
 
   # ----------------------------------------------------------------------------------------------
+  # Root Block Device
+  # ----------------------------------------------------------------------------------------------
+  # Override default AMI disk size and storage configuration.
+  # - gp3 SSD with 64 GiB capacity
+  # - Baseline throughput and IOPS are the gp3 defaults
+  root_block_device {
+    volume_type = "gp3"
+    volume_size = 64
+    delete_on_termination = true
+  }
+
+  # ----------------------------------------------------------------------------------------------
   # Networking
   # ----------------------------------------------------------------------------------------------
   # - Places the instance into a designated VPC subnet.
@@ -58,7 +70,8 @@ resource "aws_instance" "efs_client_instance" {
   subnet_id = data.aws_subnet.vm_subnet_1.id
 
   vpc_security_group_ids = [
-    aws_security_group.ad_ssh_sg.id  # Allows SSH access; extend with SSM SG if required
+    aws_security_group.ad_ssh_sg.id,
+    aws_security_group.ad_rdp_sg.id  # Allows RDP access; extend with SSM SG if required
   ]
 
   # Assigns a public IP to the instance at launch (enables external SSH/RDP if allowed by SGs).
