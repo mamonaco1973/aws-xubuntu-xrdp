@@ -79,8 +79,6 @@ subnet_id=$(aws ec2 describe-subnets \
 cd 02-packer || { echo "ERROR: Directory 02-packer not found"; exit 1; }
 
 echo "NOTE: Building Xubuntu XRDP AMI with Packer..."
-echo $vpc_id
-echo $subnet_id
 
 packer init ./xubuntu_ami.pkr.hcl
 packer build -var "vpc_id=$vpc_id" -var "subnet_id=$subnet_id" ./xubuntu_ami.pkr.hcl || {
