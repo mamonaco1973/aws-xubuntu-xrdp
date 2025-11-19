@@ -24,114 +24,99 @@ resource "aws_secretsmanager_secret_version" "admin_secret_version" {
   })
 }
 
-# --- User: John Smith ---
+# ================================================================================================
+# Memorable Word List
+# ================================================================================================
 
-# Generate a random password for John Smith
-resource "random_password" "jsmith_password" {
-  length           = 24
-  special          = true
-  override_special = "!@#$%"
+locals {
+  memorable_words = [
+    "bright",
+    "simple",
+    "orange",
+    "window",
+    "little",
+    "people",
+    "friend",
+    "yellow",
+    "animal",
+    "family",
+    "circle",
+    "moment",
+    "summer",
+    "button",
+    "planet",
+    "rocket",
+    "silver",
+    "forest",
+    "stream",
+    "butter",
+    "castle",
+    "wonder",
+    "gentle",
+    "driver",
+    "coffee"
+  ]
 }
 
-# Create a Secrets Manager entry for John Smith's credentials
-resource "aws_secretsmanager_secret" "jsmith_secret" {
-  name        = "jsmith_ad_credentials"
-  description = "John Smith's AD Credentials"
+# ================================================================================================
+# User Accounts to Generate
+# ================================================================================================
+locals {
+  ad_users = {
+    jsmith = "John Smith"
+    rpatel = "Raj Patel"
+    akumar = "Amit Kumar"
+    edavis = "Emily Davis"
+  }
+}
+
+# ================================================================================================
+# Random Word (one per user)
+# ================================================================================================
+resource "random_shuffle" "word" {
+  for_each     = local.ad_users
+  input        = local.memorable_words
+  result_count = 1
+}
+
+# ================================================================================================
+# Random 6-digit number (one per user)
+# ================================================================================================
+resource "random_integer" "num" {
+  for_each = local.ad_users
+  min      = 100000
+  max      = 999999
+}
+
+# ================================================================================================
+# Build the Password: <word><number>
+# ================================================================================================
+locals {
+  passwords = {
+    for user, fullname in local.ad_users :
+    user => "${random_shuffle.word[user].result[0]}${random_integer.num[user].result}"
+  }
+}
+
+# ================================================================================================
+# Create AWS Secret + Version for Each User
+# ================================================================================================
+resource "aws_secretsmanager_secret" "user_secret" {
+  for_each    = local.ad_users
+  name        = "${each.key}_ad_credentials"
+  description = "${each.value}'s AD Credentials"
 
   lifecycle {
     prevent_destroy = false
   }
 }
 
-# Store John Smith's AD credentials in AWS Secrets Manager
-resource "aws_secretsmanager_secret_version" "jsmith_secret_version" {
-  secret_id = aws_secretsmanager_secret.jsmith_secret.id
+resource "aws_secretsmanager_secret_version" "user_secret_version" {
+  for_each  = local.ad_users
+  secret_id = aws_secretsmanager_secret.user_secret[each.key].id
+
   secret_string = jsonencode({
-    username = "${var.netbios}\\jsmith"
-    password = random_password.jsmith_password.result
-  })
-}
-
-# --- User: Emily Davis ---
-
-# Generate a random password for Emily Davis
-resource "random_password" "edavis_password" {
-  length           = 24
-  special          = true
-  override_special = "!@#$%"
-}
-
-# Create a Secrets Manager entry for Emily Davis's credentials
-resource "aws_secretsmanager_secret" "edavis_secret" {
-  name        = "edavis_ad_credentials"
-  description = "Emily Davis's AD Credentials"
-
-  lifecycle {
-    prevent_destroy = false
-  }
-}
-
-# Store Emily Davis's AD credentials in AWS Secrets Manager
-resource "aws_secretsmanager_secret_version" "edavis_secret_version" {
-  secret_id = aws_secretsmanager_secret.edavis_secret.id
-  secret_string = jsonencode({
-    username = "${var.netbios}\\edavis"
-    password = random_password.edavis_password.result
-  })
-}
-
-# --- User: Raj Patel ---
-
-# Generate a random password for Raj Patel
-resource "random_password" "rpatel_password" {
-  length           = 24
-  special          = true
-  override_special = "!@#$%"
-}
-
-# Create a Secrets Manager entry for Raj Patel's credentials
-resource "aws_secretsmanager_secret" "rpatel_secret" {
-  name        = "rpatel_ad_credentials"
-  description = "Raj Patel's AD Credentials"
-
-  lifecycle {
-    prevent_destroy = false
-  }
-}
-
-# Store Raj Patel's AD credentials in AWS Secrets Manager
-resource "aws_secretsmanager_secret_version" "rpatel_secret_version" {
-  secret_id = aws_secretsmanager_secret.rpatel_secret.id
-  secret_string = jsonencode({
-    username = "${var.netbios}\\rpatel"
-    password = random_password.rpatel_password.result
-  })
-}
-
-# --- User: Amit Kumar ---
-
-# Generate a random password for Amit Kumar
-resource "random_password" "akumar_password" {
-  length           = 24
-  special          = true
-  override_special = "!@#$%"
-}
-
-# Create a Secrets Manager entry for Amit Kumar's credentials
-resource "aws_secretsmanager_secret" "akumar_secret" {
-  name        = "akumar_ad_credentials"
-  description = "Amit Kumar's AD Credentials"
-
-  lifecycle {
-    prevent_destroy = false
-  }
-}
-
-# Store Amit Kumar's AD credentials in AWS Secrets Manager
-resource "aws_secretsmanager_secret_version" "akumar_secret_version" {
-  secret_id = aws_secretsmanager_secret.akumar_secret.id
-  secret_string = jsonencode({
-    username = "${var.netbios}\\akumar"
-    password = random_password.akumar_password.result
+    username = "${each.key}@${var.dns_zone}"
+    password = local.passwords[each.key]
   })
 }
