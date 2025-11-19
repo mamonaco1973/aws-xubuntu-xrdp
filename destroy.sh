@@ -27,7 +27,24 @@ export AWS_DEFAULT_REGION="us-east-1"   # AWS region for all deployed resources
 set -e                                  # Exit immediately if any command returns a non-zero status
 
 # ------------------------------------------------------------------------------------------------
-# Phase 0: Deregister AMIs and delete associated snapshots
+# Phase 1: Destroy Server EC2 Instances
+# ------------------------------------------------------------------------------------------------
+echo "NOTE: Destroying EC2 server instances..."
+
+# Navigate to server module directory
+cd 03-servers || { echo "ERROR: Directory 03-servers not found"; exit 1; }
+
+# Reinitialize Terraform (ensures backend/plugins are ready before destroy)
+terraform init
+
+# Force-destroy server resources without requiring interactive approval
+terraform destroy -auto-approve
+
+# Return to root directory
+cd .. || exit
+
+# ------------------------------------------------------------------------------------------------
+# Phase 2: Deregister AMIs and delete associated snapshots
 # ------------------------------------------------------------------------------------------------
 echo "NOTE: Deregistering project AMIs and deleting snapshots..."
 
@@ -51,24 +68,7 @@ for ami_id in $(aws ec2 describe-images \
 done
 
 # ------------------------------------------------------------------------------------------------
-# Phase 1: Destroy Server EC2 Instances
-# ------------------------------------------------------------------------------------------------
-echo "NOTE: Destroying EC2 server instances..."
-
-# Navigate to server module directory
-cd 03-servers || { echo "ERROR: Directory 03-servers not found"; exit 1; }
-
-# Reinitialize Terraform (ensures backend/plugins are ready before destroy)
-terraform init
-
-# Force-destroy server resources without requiring interactive approval
-terraform destroy -auto-approve
-
-# Return to root directory
-cd .. || exit
-
-# ------------------------------------------------------------------------------------------------
-# Phase 2: Destroy AD Instance and Supporting Resources
+# Phase 3: Destroy AD Instance and Supporting Resources
 # ------------------------------------------------------------------------------------------------
 echo "NOTE: Deleting AD-related AWS secrets and parameters..."
 
