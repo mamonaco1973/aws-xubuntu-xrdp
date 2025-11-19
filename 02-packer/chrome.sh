@@ -31,4 +31,6 @@ google-chrome --version
 
 sudo cp /usr/share/applications/google-chrome.desktop \
         /etc/skel/Desktop/google-chrome.desktop
+
+chmod 755 /etc/skel/Desktop/google-chrome.desktop
         

@@ -13,3 +13,8 @@ sudo apt-get install -y libreoffice libreoffice-gnome libreoffice-common
 
 echo "NOTE: Installation complete."
 libreoffice --version
+
+cp /usr/share/applications/libreoffice-startcenter.desktop \
+        /etc/skel/Desktop/libreoffice-startcenter.desktop
+
+chmod 755 /etc/skel/Desktop/libreoffice-startcenter.desktop

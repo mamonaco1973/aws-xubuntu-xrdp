@@ -27,3 +27,5 @@ EOF
 sudo apt update
 sudo apt install -y firefox
 
+cp /usr/share/applications/firefox.desktop /etc/skel/Desktop/firefox.desktop
+chmod 755 /etc/skel/Desktop/firefox.desktop

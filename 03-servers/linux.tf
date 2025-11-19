@@ -94,7 +94,7 @@ resource "aws_instance" "xubuntu_instance" {
   # ----------------------------------------------------------------------------------------------
   # Standard AWS tagging for identification, cost tracking, and automation workflows.
   tags = {
-    Name = "efs-client-instance"
+    Name = "xubuntu-instance"
   }
 
   # ----------------------------------------------------------------------------------------------

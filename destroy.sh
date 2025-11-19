@@ -27,6 +27,30 @@ export AWS_DEFAULT_REGION="us-east-1"   # AWS region for all deployed resources
 set -e                                  # Exit immediately if any command returns a non-zero status
 
 # ------------------------------------------------------------------------------------------------
+# Phase 0: Deregister AMIs and delete associated snapshots
+# ------------------------------------------------------------------------------------------------
+echo "NOTE: Deregistering project AMIs and deleting snapshots..."
+
+for ami_id in $(aws ec2 describe-images \
+    --owners self \
+    --filters "Name=name,Values=xubuntu_ami*" \
+    --query "Images[].ImageId" \
+    --output text); do
+
+    for snapshot_id in $(aws ec2 describe-images \
+        --image-ids "$ami_id" \
+        --query "Images[].BlockDeviceMappings[].Ebs.SnapshotId" \
+        --output text); do
+
+        echo "NOTE: Deregistering AMI: $ami_id"
+        aws ec2 deregister-image --image-id "$ami_id"
+
+        echo "NOTE: Deleting snapshot: $snapshot_id"
+        aws ec2 delete-snapshot --snapshot-id "$snapshot_id"
+    done
+done
+
+# ------------------------------------------------------------------------------------------------
 # Phase 1: Destroy Server EC2 Instances
 # ------------------------------------------------------------------------------------------------
 echo "NOTE: Destroying EC2 server instances..."
