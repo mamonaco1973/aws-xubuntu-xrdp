@@ -28,3 +28,4 @@ chmod 755 /etc/xrdp/startwm.sh
 
 echo "NOTE: /etc/xrdp/startwm.sh replaced and permissions set"
 
+systemctl enable xrdp
