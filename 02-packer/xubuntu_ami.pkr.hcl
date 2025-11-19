@@ -1,10 +1,10 @@
 # ==========================================================================================
-# Packer Build: RStudio AMI on Ubuntu 24.04 (Noble)
+# Packer Build: Xubuntu AMI on Ubuntu 24.04 (Noble)
 # ------------------------------------------------------------------------------------------
 # Purpose:
 #   - Uses Packer to build a custom Amazon Machine Image (AMI) for Xubuntu XRDP
 #   - Starts from the official Canonical Ubuntu 24.04 AMI
-#   - Installs prerequisites (SSM agent, AWS CLI, packages, RStudio Server)
+#   - Installs prerequisites (SSM agent, AWS CLI, packages, Xubuntu Server)
 #   - Produces a tagged, timestamped AMI for later use in Terraform or EC2 launches
 # ==========================================================================================
 
@@ -75,7 +75,7 @@ source "amazon-ebs" "xubuntu_ami" {
   instance_type = var.instance_type                # EC2 instance type
   source_ami    = data.amazon-ami.ubuntu_2404.id   # Base Ubuntu 24.04 AMI
   ssh_username  = "ubuntu"                         # Default SSH user for Ubuntu
-  ami_name      = "rstudio_ami_${replace(timestamp(), ":", "-")}" # Timestamped AMI name
+  ami_name      = "xubuntu_ami_${replace(timestamp(), ":", "-")}" # Timestamped AMI name
   ssh_interface = "public_ip"                      # Use public IP for provisioning
   vpc_id        = var.vpc_id                       # Target VPC
   subnet_id     = var.subnet_id                    # Target Subnet (must allow outbound internet)
