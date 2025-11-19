@@ -37,36 +37,8 @@ apt-get update -y
 # Prevent interactive prompts during package installs
 export DEBIAN_FRONTEND=noninteractive
 
-# Install packages needed for:
-#   - Active Directory integration: realmd, sssd-ad, adcli, krb5-user
-#   - NSS/PAM integration: libnss-sss, libpam-sss, winbind, libpam-winbind, libnss-winbind
-#   - Samba file services: samba, samba-common-bin, samba-libs
-#   - Home directory automation: oddjob, oddjob-mkhomedir
-#   - Utilities: less, unzip, nano, vim, nfs-common, stunnel4
-apt-get install -y less unzip realmd sssd-ad sssd-tools libnss-sss \
-    libpam-sss adcli samba samba-common-bin samba-libs oddjob \
-    oddjob-mkhomedir packagekit krb5-user nano vim nfs-common \
-    winbind libpam-winbind libnss-winbind stunnel4 >> /root/userdata.log 2>&1
-
-# Install Amazon EFS utilities (for mounting EFS with TLS support)
-cd /tmp
-git clone https://github.com/mamonaco1973/amazon-efs-utils.git
-cd amazon-efs-utils
-sudo dpkg -i amazon-efs-utils*.deb >> /root/userdata.log 2>&1
-which mount.efs >> /root/userdata.log 2>&1
-
 # ---------------------------------------------------------------------------------
-# Section 2: Install AWS CLI v2
-# ---------------------------------------------------------------------------------
-# Provides access to AWS APIs (e.g., Secrets Manager, S3)
-cd /tmp
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-rm -f -r awscliv2.zip aws
-
-# ---------------------------------------------------------------------------------
-# Section 3: Mount Amazon EFS File System
+# Section 2: Mount Amazon EFS File System
 # ---------------------------------------------------------------------------------
 # Prepare mount points for shared storage (/efs, /home, /data)
 mkdir -p /efs
@@ -81,7 +53,7 @@ systemctl daemon-reload
 mount /home
 
 # ---------------------------------------------------------------------------------
-# Section 4: Join Active Directory Domain
+# Section 3: Join Active Directory Domain
 # ---------------------------------------------------------------------------------
 # Retrieve AD admin credentials securely from AWS Secrets Manager
 secretValue=$(aws secretsmanager get-secret-value --secret-id ${admin_secret} \
@@ -94,14 +66,14 @@ echo -e "$admin_password" | sudo /usr/sbin/realm join --membership-software=samb
     -U "$admin_username" ${domain_fqdn} --verbose >> /tmp/join.log 2>&1
 
 # ---------------------------------------------------------------------------------
-# Section 5: Enable Password Authentication for AD Users
+# Section 4: Enable Password Authentication for AD Users
 # ---------------------------------------------------------------------------------
 # Update SSHD configuration to allow password-based logins (required for AD users)
 sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' \
     /etc/ssh/sshd_config.d/60-cloudimg-settings.conf
 
 # ---------------------------------------------------------------------------------
-# Section 6: Configure SSSD for AD Integration
+# Section 5: Configure SSSD for AD Integration
 # ---------------------------------------------------------------------------------
 # Adjust SSSD settings for simplified user experience:
 #   - Use short usernames instead of user@domain
@@ -126,7 +98,7 @@ sudo pam-auth-update --enable mkhomedir
 sudo systemctl restart ssh
 
 # ---------------------------------------------------------------------------------
-# Section 7: Configure Samba File Server
+# Section 6: Configure Samba File Server
 # ---------------------------------------------------------------------------------
 # Stop SSSD temporarily to allow Samba configuration updates
 sudo systemctl stop sssd
@@ -235,13 +207,13 @@ sudo rm /tmp/nsswitch.conf
 sudo systemctl restart winbind smb nmb sssd
 
 # ---------------------------------------------------------------------------------
-# Section 8: Grant Sudo Privileges to AD Admin Group
+# Section 7: Grant Sudo Privileges to AD Admin Group
 # ---------------------------------------------------------------------------------
 # Members of "linux-admins" AD group get passwordless sudo access
 echo "%linux-admins ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/10-linux-admins
 
 # ---------------------------------------------------------------------------------
-# Section 9: Enforce Home Directory Permissions
+# Section 8: Enforce Home Directory Permissions
 # ---------------------------------------------------------------------------------
 # Force new home directories to have mode 0700 (private)
 sudo sed -i 's/^\(\s*HOME_MODE\s*\)[0-9]\+/\10700/' /etc/login.defs

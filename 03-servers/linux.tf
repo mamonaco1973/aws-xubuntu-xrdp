@@ -1,47 +1,32 @@
-# ================================================================================================
-# Canonical Ubuntu 24.04 AMI Lookup
-# ================================================================================================
-# Fetch the Canonical-published Ubuntu 24.04 LTS AMI ID from AWS Systems Manager (SSM).
-# - Canonical maintains this parameter and keeps it updated to the current stable release.
-# - This ensures that new deployments always use the latest recommended image for Ubuntu 24.04.
-# - Architecture: amd64
-# - Virtualization: HVM
-# - Storage type: gp3
-# ================================================================================================
-data "aws_ssm_parameter" "ubuntu_24_04" {
-  name = "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id"
-}
-
-# ================================================================================================
-# Resolve Full AMI Object
-# ================================================================================================
-# Retrieves the full Amazon Machine Image (AMI) object corresponding to the ID fetched above.
-# - Restricts the AMI owner to Canonical (099720109477) to avoid spoofed or untrusted AMIs.
-# - Uses "most_recent = true" as an additional safeguard in case of multiple matches.
-# ================================================================================================
-data "aws_ami" "ubuntu_ami" {
-  most_recent = true
-  owners      = ["099720109477"] # Canonical’s official AWS account ID
+data "aws_ami" "latest_desktop_ami" {
+  most_recent = true                    # Return the most recently created AMI matching filters
 
   filter {
-    name   = "image-id"
-    values = [data.aws_ssm_parameter.ubuntu_24_04.value]
+    name   = "name"                     # Filter AMIs by name pattern
+    values = ["xubuntu_ami*"]           # Match AMI names starting with "xubuntu_ami"
   }
+
+  filter {
+    name   = "state"                    # Filter AMIs by state
+    values = ["available"]              # Ensure AMI is in 'available' state
+  }
+
+  owners = ["self"]                     # Limit to AMIs owned by current AWS account
 }
 
 # ================================================================================================
-# EC2 Instance: EFS Client
+# EC2 Instance: Xubuntu Desktop
 # ================================================================================================
 # Provisions an Ubuntu 24.04 EC2 instance that mounts an Amazon EFS file system and
 # integrates into an Active Directory (AD) environment.
 # ================================================================================================
-resource "aws_instance" "efs_client_instance" {
+resource "aws_instance" "xubuntu_instance" {
 
   # ----------------------------------------------------------------------------------------------
   # Amazon Machine Image (AMI)
   # ----------------------------------------------------------------------------------------------
-  # Dynamically resolved to the latest Canonical-published Ubuntu 24.04 AMI.
-  ami = data.aws_ami.ubuntu_ami.id
+  # Dynamically resolved to the latest Xubuntu AMI built via Packer.
+  ami = data.aws_ami.latest_desktop_ami.id
 
   # ----------------------------------------------------------------------------------------------
   # Instance Type
