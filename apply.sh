@@ -62,7 +62,35 @@ terraform apply -auto-approve       # Apply AD module without requiring interact
 cd .. || exit
 
 # ------------------------------------------------------------------------------------------------
-# Phase 2: Build EC2 Server Instances
+# Phase 2: Use Packer to Build Xubuntu XRDP AMI
+# ------------------------------------------------------------------------------------------------
+
+# Extract networking details for Packer build
+vpc_id=$(aws ec2 describe-vpcs \
+  --filters "Name=tag:Name,Values=ad-vpc" \
+  --query "Vpcs[0].VpcId" \
+  --output text)
+
+subnet_id=$(aws ec2 describe-subnets \
+  --filters "Name=tag:Name,Values=pub-subnet-1" \
+  --query "Subnets[0].SubnetId" \
+  --output text)
+
+cd 02-packer || { echo "ERROR: Directory 02-packer not found"; exit 1; }
+
+echo "NOTE: Building Xubuntu XRDP AMI with Packer..."
+
+packer init ./xubuntu_xrdp.pkr.hcl
+packer build -var "vpc_id=$vpc_id" -var "subnet_id=$subnet_id" ./xubuntu_xrdp.pkr.hcl || {
+  echo "ERROR: Packer build failed. Aborting."
+  cd ..
+  exit 1
+}
+
+cd .. || exit
+
+# ------------------------------------------------------------------------------------------------
+# Phase 3: Build EC2 Server Instances
 # ------------------------------------------------------------------------------------------------
 # Once the AD is up, provision additional EC2 instances that rely on it
 # (e.g., domain-joined Linux/Windows servers). This ensures sequencing.

@@ -261,9 +261,9 @@ chmod 770 /efs/data
 chmod 700 /home/*
 
 cd /efs
-git clone https://github.com/mamonaco1973/aws-efs.git
-chmod -R 775 aws-efs
-chgrp -R mcloud-users aws-efs
+git clone https://github.com/mamonaco1973/aws-xubuntu-xrdp.git
+chmod -R 775 aws-xubuntu-xrdp
+chgrp -R mcloud-users aws-xubuntu-xrdp
 
 
 # =================================================================================
