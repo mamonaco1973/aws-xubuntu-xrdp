@@ -24,6 +24,7 @@
 # Configuration
 # ------------------------------------------------------------------------------------------------
 export AWS_DEFAULT_REGION="us-east-1"   # AWS region for all deployed resources
+set -e                                  # Exit immediately if any command returns a non-zero status
 
 # ------------------------------------------------------------------------------------------------
 # Phase 1: Destroy Server EC2 Instances
@@ -31,7 +32,7 @@ export AWS_DEFAULT_REGION="us-east-1"   # AWS region for all deployed resources
 echo "NOTE: Destroying EC2 server instances..."
 
 # Navigate to server module directory
-cd 02-servers || { echo "ERROR: Directory 02-servers not found"; exit 1; }
+cd 03-servers || { echo "ERROR: Directory 03-servers not found"; exit 1; }
 
 # Reinitialize Terraform (ensures backend/plugins are ready before destroy)
 terraform init

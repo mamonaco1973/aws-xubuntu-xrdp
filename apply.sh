@@ -68,7 +68,7 @@ cd .. || exit
 # (e.g., domain-joined Linux/Windows servers). This ensures sequencing.
 echo "NOTE: Building EC2 server instances..."
 
-cd 02-servers || { echo "ERROR: Directory 02-servers not found"; exit 1; }
+cd 03-servers || { echo "ERROR: Directory 03-servers not found"; exit 1; }
 
 terraform init                      # Initialize Terraform backend and providers
 terraform apply -auto-approve       # Apply server module without requiring interactive approval
