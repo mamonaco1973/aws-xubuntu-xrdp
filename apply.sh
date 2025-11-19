@@ -80,8 +80,8 @@ cd 02-packer || { echo "ERROR: Directory 02-packer not found"; exit 1; }
 
 echo "NOTE: Building Xubuntu XRDP AMI with Packer..."
 
-packer init ./xubuntu_xmi.pkr.hcl
-packer build -var "vpc_id=$vpc_id" -var "subnet_id=$subnet_id" ./xubuntu_xmi.pkr.hcl || {
+packer init ./xubuntu_ami.pkr.hcl
+packer build -var "vpc_id=$vpc_id" -var "subnet_id=$subnet_id" ./xubuntu_ami.pkr.hcl || {
   echo "ERROR: Packer build failed. Aborting."
   cd ..
   exit 1
