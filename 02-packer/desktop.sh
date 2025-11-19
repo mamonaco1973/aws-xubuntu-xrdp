@@ -1,32 +1,28 @@
 #!/bin/bash
 set -euo pipefail
 
-# Applications you want on every user's desktop by default
+# Applications you want on every new user's desktop
 APPS=(
     /usr/share/applications/google-chrome.desktop
     /usr/share/applications/firefox.desktop
     /usr/share/applications/libreoffice-startcenter.desktop
 )
 
-# Destination (system-wide skeleton for all future users)
+# System-wide skeleton directory
 SKEL_DESKTOP="/etc/skel/Desktop"
-mkdir -p "$SKEL_DESKTOP"
 
-echo "Adding trusted desktop shortcuts to /etc/skel for all future users..."
+echo "NOTE: Creating direct trusted symlinks in /etc/skel/Desktop (no more untrusted dialog)..."
+
+mkdir -p "$SKEL_DESKTOP"
 
 for src in "${APPS[@]}"; do
     if [[ -f "$src" ]]; then
         filename=$(basename "$src")
-        dest="$SKEL_DESKTOP/$filename"
-
-        # Copy preserving everything (permissions, timestamps, etc.)
-        cp -a "$src" "$dest"
-
-        # Ensure it's executable and trusted (this survives the copy)
-        chmod +x "$dest"
+        ln -sf "$src" "$SKEL_DESKTOP/$filename"
+        echo "NOTE: Added $filename (direct trusted symlink)"
     else
-        echo "  [WARNING] $src not found – skipping"
+        echo "WARNING: $src not found – skipping"
     fi
 done
 
-echo "Done! All new users will now get Chrome, Firefox, and LibreOffice on the desktop with NO trust prompt."
+echo "NOTE: All new users will get exactly these three icons with zero trust prompts."
