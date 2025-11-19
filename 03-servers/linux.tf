@@ -32,8 +32,9 @@ resource "aws_instance" "xubuntu_instance" {
   # Instance Type
   # ----------------------------------------------------------------------------------------------
   # Defines the compute and memory capacity of the instance.
-  # Selected as "t3.medium" for balance between cost and performance.
-  instance_type = "t3.medium"
+  # Selected as "m5.large" for better performance with desktop workloads.
+  
+  instance_type = "m5.large"
 
   # ----------------------------------------------------------------------------------------------
   # Root Block Device
