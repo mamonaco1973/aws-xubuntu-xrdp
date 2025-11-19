@@ -12,6 +12,24 @@ set -euo pipefail
 #   - AWS CLI v2 for accessing AWS services (Secrets Manager, S3, etc.)
 # ==========================================================================================
 
+# ------------------------------------------------------------------------------------------
+# XRDP has issues with snap so disable and remove it first
+# ------------------------------------------------------------------------------------------
+
+sudo systemctl stop snap.amazon-ssm-agent.amazon-ssm-agent.service || true
+sudo snap remove --purge amazon-ssm-agent
+sudo snap remove --purge core22
+sudo snap remove --purge snapd
+sudo apt purge -y snapd
+sudo apt autoremove --purge -y
+echo -e "Package: snapd\nPin: release *\nPin-Priority: -10" \
+ | sudo tee /etc/apt/preferences.d/nosnap.pref
+sudo apt update
+curl https://s3.amazonaws.com/amazon-ssm-us-east-1/latest/debian_amd64/amazon-ssm-agent.deb -o ssm.deb
+sudo dpkg -i ssm.deb
+systemctl enable amazon-ssm-agent
+systemctl start amazon-ssm-agent
+rm ssm.deb
 
 # ------------------------------------------------------------------------------------------
 # Refresh Package Metadata
