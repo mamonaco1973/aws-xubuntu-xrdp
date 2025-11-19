@@ -1,50 +1,51 @@
 #!/bin/bash
 # ================================================================================================
-# Active Directory + Dependent Server Infrastructure Teardown Script
+# AD + Server Infrastructure Teardown Script
 # ================================================================================================
 # Description:
-#   This script automates a controlled, two-phase destruction of AWS-based infrastructure:
-#     1. Tears down application/server EC2 instances provisioned by Terraform.
-#     2. Deletes the Active Directory (AD) Domain Controller, along with sensitive
-#        AWS Secrets Manager secrets and SSM parameters, then runs AD Terraform teardown.
+#   Automates a controlled teardown of AWS infrastructure:
+#     1. Removes EC2 server instances created by Terraform.
+#     2. Deletes Packer-built AMIs and snapshots matching project patterns.
+#     3. Removes AD Domain Controller, deletes AD secrets, and runs AD destroy.
 #
 # IMPORTANT:
-#   - Secrets are deleted permanently with --force-delete-without-recovery (no restore window).
-#   - Ensure the AWS CLI is installed and configured with credentials/permissions
-#     to delete EC2 instances and Secrets Manager secrets
-#   - Terraform must be installed and initialized within each module directory.
-#   - Run this script only if you are certain you want to fully dismantle the environment.
+#   - Secrets are removed with --force-delete-without-recovery (no restore).
+#   - AWS CLI must be configured with permissions for EC2 and Secrets Manager.
+#   - Terraform must be installed and initialized in each module directory.
+#   - Run only when you intend to fully remove all deployed resources.
 #
 # Exit Codes:
-#   - 0 : Successful completion.
-#   - 1 : Failure due to missing directories or Terraform/AWS CLI errors.
+#   - 0 : Success.
+#   - 1 : Failure due to missing dirs or Terraform/AWS CLI errors.
 # ================================================================================================
 
 # ------------------------------------------------------------------------------------------------
 # Configuration
 # ------------------------------------------------------------------------------------------------
-export AWS_DEFAULT_REGION="us-east-1"   # AWS region for all deployed resources
-set -e                                  # Exit immediately if any command returns a non-zero status
+export AWS_DEFAULT_REGION="us-east-1"   # Region for deployed resources
+set -e                                  # Exit on any non-zero command
 
 # ------------------------------------------------------------------------------------------------
-# Phase 1: Destroy Server EC2 Instances
+# Phase 1: Destroy EC2 Server Instances
+# ------------------------------------------------------------------------------------------------
+# This phase removes EC2 server instances defined in the server Terraform
+# module. All EC2 resources in 03-servers are destroyed automatically.
 # ------------------------------------------------------------------------------------------------
 echo "NOTE: Destroying EC2 server instances..."
 
-# Navigate to server module directory
-cd 03-servers || { echo "ERROR: Directory 03-servers not found"; exit 1; }
+cd 03-servers || { echo "ERROR: Missing 03-servers dir"; exit 1; }
 
-# Reinitialize Terraform (ensures backend/plugins are ready before destroy)
-terraform init
+terraform init                          # Initialize backend and providers
+terraform destroy -auto-approve         # Destroy server resources
 
-# Force-destroy server resources without requiring interactive approval
-terraform destroy -auto-approve
-
-# Return to root directory
-cd .. || exit
+cd .. || exit                           # Return to repo root
 
 # ------------------------------------------------------------------------------------------------
-# Phase 2: Deregister AMIs and delete associated snapshots
+# Phase 2: Deregister AMIs and delete snapshots
+# ------------------------------------------------------------------------------------------------
+# This phase deletes all project AMIs, including those created by Packer.
+# AMIs named with the xubuntu_ami* pattern are discovered and removed. Any
+# snapshots referenced by these AMIs are also deleted to prevent leaks.
 # ------------------------------------------------------------------------------------------------
 echo "NOTE: Deregistering project AMIs and deleting snapshots..."
 
@@ -68,23 +69,28 @@ for ami_id in $(aws ec2 describe-images \
 done
 
 # ------------------------------------------------------------------------------------------------
-# Phase 3: Destroy AD Instance and Supporting Resources
+# Phase 3: Destroy AD Instance and Related Resources
 # ------------------------------------------------------------------------------------------------
-echo "NOTE: Deleting AD-related AWS secrets and parameters..."
+# This phase deletes AD-related AWS Secrets Manager items and destroys the
+# AD Domain Controller via Terraform. Secrets are removed permanently with
+# no recovery window.
+# ------------------------------------------------------------------------------------------------
+echo "NOTE: Deleting AD secrets..."
 
-# Permanently delete AD user/admin secrets from AWS Secrets Manager
-# WARNING: --force-delete-without-recovery removes the secret immediately with no recovery window.
-aws secretsmanager delete-secret --secret-id "akumar_ad_credentials" --force-delete-without-recovery
-aws secretsmanager delete-secret --secret-id "jsmith_ad_credentials" --force-delete-without-recovery
-aws secretsmanager delete-secret --secret-id "edavis_ad_credentials" --force-delete-without-recovery
-aws secretsmanager delete-secret --secret-id "rpatel_ad_credentials" --force-delete-without-recovery
-aws secretsmanager delete-secret --secret-id "admin_ad_credentials" --force-delete-without-recovery
+aws secretsmanager delete-secret --secret-id "akumar_ad_credentials" \
+    --force-delete-without-recovery
+aws secretsmanager delete-secret --secret-id "jsmith_ad_credentials" \
+    --force-delete-without-recovery
+aws secretsmanager delete-secret --secret-id "edavis_ad_credentials" \
+    --force-delete-without-recovery
+aws secretsmanager delete-secret --secret-id "rpatel_ad_credentials" \
+    --force-delete-without-recovery
+aws secretsmanager delete-secret --secret-id "admin_ad_credentials" \
+    --force-delete-without-recovery
 
+echo "NOTE: Destroying AD Terraform resources..."
 
-# Destroy the AD instance via Terraform
-echo "NOTE: Destroying AD instance..."
-
-cd 01-directory || { echo "ERROR: Directory 01-directory not found"; exit 1; }
+cd 01-directory || { echo "ERROR: Missing 01-directory dir"; exit 1; }
 
 terraform init
 terraform destroy -auto-approve
@@ -94,7 +100,7 @@ cd .. || exit
 # ------------------------------------------------------------------------------------------------
 # Completion
 # ------------------------------------------------------------------------------------------------
-echo "NOTE: Infrastructure destruction complete."
+echo "NOTE: Infrastructure teardown complete."
 # ================================================================================================
 # End of Script
 # ================================================================================================
