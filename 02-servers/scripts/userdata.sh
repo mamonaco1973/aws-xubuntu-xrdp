@@ -113,7 +113,10 @@ sudo sed -i 's/ldap_id_mapping = True/ldap_id_mapping = False/g' \
     /etc/sssd/sssd.conf
 sudo sed -i 's|fallback_homedir = /home/%u@%d|fallback_homedir = /home/%u|' \
     /etc/sssd/sssd.conf
-
+sudo sed -i \
+  -e 's/^access_provider *= *.*/access_provider = simple/' \
+  /etc/sssd/sssd.conf
+  
 # Prevent XAuthority warnings for new AD users
 touch /etc/skel/.Xauthority
 chmod 600 /etc/skel/.Xauthority
