@@ -24,19 +24,9 @@ for src in "${APPS[@]}"; do
 
         # Ensure it's executable and trusted (this survives the copy)
         chmod +x "$dest"
-        gio set "$dest" "metadata::trusted" true
-
-        echo "  → $filename (trusted)"
     else
         echo "  [WARNING] $src not found – skipping"
     fi
 done
 
 echo "Done! All new users will now get Chrome, Firefox, and LibreOffice on the desktop with NO trust prompt."
-
-# Optional: Also push to all EXISTING users right now (uncomment if you want that too)
-# for home in /home/*/; do
-#     cp -a "$SKEL_DESKTOP"/* "$home/Desktop/" 2>/dev/null || true
-#     chown --reference="$home" "$home/Desktop/"* 2>/dev/null || true
-#     gio set "$home/Desktop/"*.desktop "metadata::trusted" true 2>/dev/null || true
-# done
