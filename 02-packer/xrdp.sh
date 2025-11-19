@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-udo apt install -y xrdp
+sudo apt install -y xrdp
 
 cat >/etc/xrdp/startwm.sh <<'EOF'
 #!/bin/sh
