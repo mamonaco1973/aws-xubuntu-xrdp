@@ -94,7 +94,7 @@ resource "random_integer" "num" {
 locals {
   passwords = {
     for user, fullname in local.ad_users :
-    user => "${random_shuffle.word[user].result[0]}${random_integer.num[user].result}"
+    user => "${random_shuffle.word[user].result[0]}-${random_integer.num[user].result}"
   }
 }
 
