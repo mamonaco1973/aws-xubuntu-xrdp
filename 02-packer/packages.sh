@@ -16,12 +16,13 @@ set -euo pipefail
 # XRDP has issues with snap so disable and remove it first
 # ------------------------------------------------------------------------------------------
 
+export DEBIAN_FRONTEND=noninteractive
+
 sudo systemctl stop snap.amazon-ssm-agent.amazon-ssm-agent.service || true
 sudo snap remove --purge amazon-ssm-agent
 sudo snap remove --purge core22
 sudo snap remove --purge snapd
 sudo apt-get purge -y snapd
-sudo apt-get autoremove --purge -y
 echo -e "Package: snapd\nPin: release *\nPin-Priority: -10" \
  | sudo tee /etc/apt/preferences.d/nosnap.pref
 sudo apt-get update -y
@@ -30,15 +31,6 @@ sudo dpkg -i ssm.deb
 systemctl enable amazon-ssm-agent
 systemctl start amazon-ssm-agent
 rm ssm.deb
-
-# ------------------------------------------------------------------------------------------
-# Refresh Package Metadata
-# ------------------------------------------------------------------------------------------
-# Ensures local APT metadata is current before installing packages. Noninteractive mode
-# prevents installation prompts (e.g., timezone, Kerberos realm questions).
-# ------------------------------------------------------------------------------------------
-export DEBIAN_FRONTEND=noninteractive
-apt-get update -y
 
 # ------------------------------------------------------------------------------------------
 # Install Core AD, NSS, Samba, Kerberos, NFS, and Utility Packages
