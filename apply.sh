@@ -35,6 +35,7 @@
 # ------------------------------------------------------------------------------------------------
 export AWS_DEFAULT_REGION="us-east-1"   # Default AWS region for all deployed resources
 DNS_ZONE="mcloud.mikecloud.com"         # AD DNS zone / domain (used inside Terraform)
+set -e                                  # Exit immediately if any command returns a non-zero status
 
 # ------------------------------------------------------------------------------------------------
 # Environment Pre-Check
