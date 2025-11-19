@@ -29,8 +29,5 @@ sudo apt-get install -y google-chrome-stable
 echo "NOTE: Chrome installation complete."
 google-chrome --version
 
-sudo cp /usr/share/applications/google-chrome.desktop \
-        /etc/skel/Desktop/google-chrome.desktop
 
-chmod 755 /etc/skel/Desktop/google-chrome.desktop
         

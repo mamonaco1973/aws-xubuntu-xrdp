@@ -8,3 +8,7 @@ sudo apt install -y xfce4-terminal xfce4-goodies xdg-utils
 sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/xfce4-terminal 50
 
 mkdir /etc/skel/Desktop
+
+cd /usr/share/backgrounds/xfce
+mv xfce-shapes.svg xfce-shapes.svg.bak
+cp xfce-leaves.svg xfce-shapes.svg

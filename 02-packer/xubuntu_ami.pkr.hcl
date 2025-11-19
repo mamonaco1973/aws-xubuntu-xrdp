@@ -141,4 +141,11 @@ build {
     execute_command = "sudo -E bash '{{.Path}}'"
   }
 
+  # Install Desktop Icons
+
+  provisioner "shell" {
+    script          = "./desktop.sh"
+    execute_command = "sudo -E bash '{{.Path}}'"
+  }
+
 }
