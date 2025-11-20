@@ -45,4 +45,4 @@ sudo apt-get install -y postman
 # ================================================================================
 # Completion Message
 # ================================================================================
-echo "Postman installation complete."
+echo "NOTE: Postman installation complete."
