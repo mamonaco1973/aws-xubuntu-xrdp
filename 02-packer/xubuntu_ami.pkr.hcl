@@ -169,6 +169,13 @@ build {
     execute_command = "sudo -E bash '{{.Path}}'"
   }
 
+  # Install docker
+
+  provisioner "shell" {
+    script          = "./docker.sh"
+    execute_command = "sudo -E bash '{{.Path}}'"
+  }
+
   # Install Desktop icons
 
   provisioner "shell" {
