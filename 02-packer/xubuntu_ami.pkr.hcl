@@ -186,11 +186,11 @@ build {
 
   # Install postman
 
-  provisioner "shell" {
-    script          = "./postman.sh"
-    execute_command = "sudo -E bash '{{.Path}}'"
-  }
-  
+  #provisioner "shell" {
+  #  script          = "./postman.sh"
+  #  execute_command = "sudo -E bash '{{.Path}}'"
+  #}
+
   # Install Desktop icons
 
   provisioner "shell" {
