@@ -237,7 +237,6 @@ git clone https://github.com/mamonaco1973/aws-xubuntu-xrdp.git
 chmod -R 775 aws-xubuntu-xrdp
 chgrp -R mcloud-users aws-xubuntu-xrdp
 
-
 # =================================================================================
 # End of Script
 # =================================================================================

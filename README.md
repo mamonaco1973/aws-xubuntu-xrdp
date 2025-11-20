@@ -11,7 +11,7 @@ Instead of manually configuring a workstation for each tutorial, demo, or cloud
 project, this solution automatically provisions:
 
 1. **A Custom Xubuntu XRDP AMI (Packer)**
-   - Preloaded with Chrome, Firefox (deb), VS Code, Docker, Remmina, Postman  
+   - Preloaded with Chrome, Firefox (deb), VS Code, Docker, KRDC, Postman  
    - Includes all development tooling required across channel projects:  
      **Packer, Terraform, Docker CLI, AWS CLI v2, Azure CLI, Google Cloud CLI**  
    - Snap-free, clean, lightweight Xfce desktop  
@@ -117,7 +117,7 @@ When the deployment completes, the following resources are created:
   - Custom AMI containing:  
     - Xubuntu (XFCE), XRDP, Chrome, Firefox (deb), VS Code  
     - Development tools: **Packer, Terraform, Docker CLI, AWS CLI v2, Azure CLI, Google Cloud CLI**  
-    - Remmina, Postman, and all channel-wide prerequisites  
+    - KRDC, Postman, and all channel-wide prerequisites  
   - `/etc/skel` configured for default desktop icons, terminal emulator, wallpaper  
   - All XRDP fixes applied (session startup, terminal defaults, untrusted launcher, etc.)  
 
