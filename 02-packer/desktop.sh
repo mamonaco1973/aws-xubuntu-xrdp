@@ -24,7 +24,6 @@ APPS=(
   /usr/share/applications/libreoffice-startcenter.desktop
   /usr/share/applications/code.desktop
   /usr/share/applications/postman.desktop
-  /usr/share/applications/remmina-gnome.desktop
 )
 
 SKEL_DESKTOP="/etc/skel/Desktop"

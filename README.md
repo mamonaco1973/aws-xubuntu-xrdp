@@ -5,6 +5,8 @@ powered by **Xubuntu + XRDP**, **Mini-Active Directory**, and **Amazon EFS**.
 It is designed as a **universal dev workstation** that contains the full superset of
 tools, dependencies, and configurations used across all build projects on my channel.
 
+![xrdp](xrdp.png)
+
 Instead of manually configuring a workstation for each tutorial, demo, or cloud
 project, this solution automatically provisions:
 

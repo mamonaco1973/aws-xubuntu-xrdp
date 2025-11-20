@@ -191,10 +191,10 @@ build {
     execute_command = "sudo -E bash '{{.Path}}'"
   }
 
-  # Install remmina
+  # Install krdc - RDP client
 
   provisioner "shell" {
-    script          = "./remmina.sh"
+    script          = "./krdc.sh"
     execute_command = "sudo -E bash '{{.Path}}'"
   }
 
