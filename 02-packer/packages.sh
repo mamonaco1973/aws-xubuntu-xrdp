@@ -45,11 +45,10 @@ rm ssm.deb
 #   - less / unzip / nano / vim      : Basic utilities
 # ------------------------------------------------------------------------------------------
 
-apt-get install -y \
-    less unzip realmd sssd-ad sssd-tools libnss-sss libpam-sss adcli \
-    samba-common-bin samba-libs oddjob oddjob-mkhomedir packagekit \
-    krb5-user nano vim stunnel4 nfs-common
-
+apt-get install -y less unzip realmd sssd-ad sssd-tools libnss-sss \
+    libpam-sss adcli samba samba-common-bin samba-libs oddjob \
+    oddjob-mkhomedir packagekit krb5-user nano vim nfs-common \
+    winbind libpam-winbind libnss-winbind stunnel4 
 
 # ------------------------------------------------------------------------------------------
 # Install Amazon EFS Utilities
