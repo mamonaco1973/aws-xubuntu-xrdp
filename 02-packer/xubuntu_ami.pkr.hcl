@@ -50,7 +50,7 @@ variable "region" {
 
 variable "instance_type" {
   default = "m5.2xlarge"  # Use a slightly larger instance so packer builds 
-                        # will run quicker.
+                          # will run quicker.
 }
 
 variable "vpc_id" {
