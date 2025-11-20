@@ -155,6 +155,20 @@ build {
     execute_command = "sudo -E bash '{{.Path}}'"
   }
 
+  # Install AZ CLI
+
+  provisioner "shell" {
+    script          = "./azcli.sh"
+    execute_command = "sudo -E bash '{{.Path}}'"
+  }
+
+  # Install gcloud CLI
+
+  provisioner "shell" {
+    script          = "./gcloudcli.sh"
+    execute_command = "sudo -E bash '{{.Path}}'"
+  }
+
   # Install Desktop icons
 
   provisioner "shell" {
