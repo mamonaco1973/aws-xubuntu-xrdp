@@ -1,48 +1,65 @@
 #!/bin/bash
-set -euo pipefail
 
-# ================================================================================
-# Postman Installation Script (APT Repository Method)
-# ================================================================================
-# Description:
-#   Installs the Postman REST client on Ubuntu using the official APT repo.
-#   Uses apt-get instead of apt to avoid unstable CLI warnings. Stores the
-#   GPG key in /etc/apt/keyrings for secure and predictable repository
-#   configuration.
-#
-# Requirements:
-#   - Ubuntu 24.04 or compatible Debian-based system
-#   - Internet connectivity
-# ================================================================================
+# Fixed Non-Snap Postman installer for Xubuntu / Ubuntu
+# Downloads the official Linux 64-bit version and installs it to /opt
 
-# ================================================================================
-# Step 1: Create the keyring directory
-# ================================================================================
-sudo install -d -m 0755 /etc/apt/keyrings
+set -e
 
-# ================================================================================
-# Step 2: Download and register the Postman GPG key
-# ================================================================================
-curl -fsSL https://dl.pstmn.io/download/latest/linux_64 \
-  | sudo gpg --dearmor \
-  -o /etc/apt/keyrings/postman.gpg
+echo "=============================================="
+echo "  Installing Postman (official non-snap version)"
+echo "=============================================="
 
-sudo chmod a+r /etc/apt/keyrings/postman.gpg
+# Create temporary directory
+TEMP_DIR=$(mktemp -d)
+cd "$TEMP_DIR"
 
-# ================================================================================
-# Step 3: Add the Postman APT repository
-# ================================================================================
-echo "deb [signed-by=/etc/apt/keyrings/postman.gpg] \
-https://dl.pstmn.io/api/download?platform=linux64apt stable main" \
-  | sudo tee /etc/apt/sources.list.d/postman.list > /dev/null
+echo "[1/5] Detecting latest Postman version..."
+# Get the latest download URL properly (follow redirects, head only to avoid binary)
+LATEST_URL=$(curl -s -L -I https://dl.pstmn.io/download/latest/linux64 | grep -i '^location:' | sed 's/.*: //' | tr -d '\r\n')
 
-# ================================================================================
-# Step 4: Update repository index and install Postman
-# ================================================================================
-sudo apt-get update -y
-sudo apt-get install -y postman
+if [ -z "$LATEST_URL" ]; then
+    echo "Error: Could not detect latest version. Falling back to direct link."
+    DOWNLOAD_URL="https://dl.pstmn.io/download/latest/linux64"
+else
+    DOWNLOAD_URL="$LATEST_URL"
+    echo "Detected URL: $DOWNLOAD_URL"
+fi
 
-# ================================================================================
-# Completion Message
-# ================================================================================
-echo "NOTE: Postman installation complete."
+echo "[2/5] Downloading Postman..."
+curl -L -o postman.tar.gz "$DOWNLOAD_URL"
+
+if [ ! -f postman.tar.gz ] || [ ! -s postman.tar.gz ]; then
+    echo "Error: Download failed. Check your internet connection."
+    exit 1
+fi
+
+echo "[3/5] Extracting to /opt/Postman..."
+sudo mkdir -p /opt/Postman
+sudo tar -xzf postman.tar.gz -C /opt/Postman --strip-components=1
+
+echo "[4/5] Creating symlink..."
+sudo ln -sf /opt/Postman/Postman /usr/bin/postman
+
+echo "[5/5] Creating desktop entry..."
+cat | sudo tee /usr/share/applications/postman.desktop << EOF
+[Desktop Entry]
+Name=Postman
+Comment=API Client and Development Environment
+Exec=/opt/Postman/Postman
+Icon=/opt/Postman/app/resources/app/assets/icon.png
+Terminal=false
+Type=Application
+Categories=Development;Utility;
+StartupWMClass=Postman
+EOF
+
+# Clean up
+cd /
+rm -rf "$TEMP_DIR"
+
+echo ""
+echo "=============================================="
+echo "Postman installed successfully! (non-snap)"
+echo "You can now launch it from the menu or by typing 'postman' in terminal"
+echo "Location: /opt/Postman"
+echo "=============================================="

@@ -23,6 +23,7 @@ APPS=(
   /usr/share/applications/firefox.desktop
   /usr/share/applications/libreoffice-startcenter.desktop
   /usr/share/applications/code.desktop
+  /usr/share/applications/postman.desktop
 )
 
 SKEL_DESKTOP="/etc/skel/Desktop"
