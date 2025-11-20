@@ -49,7 +49,7 @@ variable "region" {
 }
 
 variable "instance_type" {
-  default = "m5.large"  # Use a slightly larger instance so packer builds 
+  default = "m5.2xlarge"  # Use a slightly larger instance so packer builds 
                         # will run quicker.
 }
 
@@ -141,7 +141,21 @@ build {
     execute_command = "sudo -E bash '{{.Path}}'"
   }
 
-  # Install Desktop Icons
+  # Install VS Code
+
+  provisioner "shell" {
+    script          = "./vscode.sh"
+    execute_command = "sudo -E bash '{{.Path}}'"
+  }
+
+  # Install HashiCorp Tools
+
+  provisioner "shell" {
+    script          = "./hashicorp.sh"
+    execute_command = "sudo -E bash '{{.Path}}'"
+  }
+
+  # Install Desktop icons
 
   provisioner "shell" {
     script          = "./desktop.sh"

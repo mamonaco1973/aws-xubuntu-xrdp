@@ -6,6 +6,7 @@ APPS=(
     /usr/share/applications/google-chrome.desktop
     /usr/share/applications/firefox.desktop
     /usr/share/applications/libreoffice-startcenter.desktop
+     /usr/share/applications/code.desktop
 )
 
 # System-wide skeleton directory
@@ -25,4 +26,4 @@ for src in "${APPS[@]}"; do
     fi
 done
 
-echo "NOTE: All new users will get exactly these three icons with zero trust prompts."
+echo "NOTE: All new users will get exactly these icons with zero trust prompts."
