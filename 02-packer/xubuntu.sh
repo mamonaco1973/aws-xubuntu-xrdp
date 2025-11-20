@@ -63,29 +63,3 @@ sudo mv xfce-shapes.svg xfce-shapes.svg.bak
 sudo cp xfce-leaves.svg xfce-shapes.svg
 echo "NOTE: Xubuntu minimal desktop and XFCE enhancements installation complete."
 
-# ---------------------------------------------------------------------------------
-# Deploy PAM script to create home directories on first rstudio login
-# ---------------------------------------------------------------------------------
-
-cat <<'EOF' | tee /etc/pam.d/xrdp-mkhomedir.sh > /dev/null
-#!/bin/bash
-echo "NOTE: Creating home directory for user $PAM_USER" >> /tmp/xrdp-mkhomedir.log
-su -c "exit" $PAM_USER
-chmod 700 /home/*
-EOF
-
-chmod +x /etc/pam.d/xrdp-mkhomedir.sh
-
-# Create /etc/pam.d/xrdp-sesman with required PAM configuration
-cat >/etc/pam.d/xrdp-sesman <<'EOF'
-#%PAM-1.0
-auth optional pam_exec.so debug /etc/pam.d/xrdp-mkhomedir.sh
-auth required pam_env.so readenv=1
-auth required pam_env.so readenv=1 envfile=/etc/default/locale
-@include common-auth
-@include common-account
-@include common-session
-@include common-password
-EOF
-
-echo "NOTE: Created /etc/pam.d/xrdp-sesman successfully."
