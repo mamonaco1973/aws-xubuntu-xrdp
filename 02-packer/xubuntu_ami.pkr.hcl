@@ -155,6 +155,14 @@ build {
     execute_command = "sudo -E bash '{{.Path}}'"
   }
 
+  # Install AWS CLI
+
+  provisioner "shell" {
+    script          = "./awscli.sh"
+    execute_command = "sudo -E bash '{{.Path}}'"
+  }
+
+
   # Install AZ CLI
 
   provisioner "shell" {

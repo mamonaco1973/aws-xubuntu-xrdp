@@ -68,20 +68,3 @@ dpkg -i amazon-efs-utils*.deb >> /root/userdata.log 2>&1
 which mount.efs >> /root/userdata.log 2>&1
 
 
-# ------------------------------------------------------------------------------------------
-# Install AWS CLI v2
-# ------------------------------------------------------------------------------------------
-# Provides authenticated access to AWS APIs required for:
-#   - Secrets Manager (fetching credentials)
-#   - S3 (pulling config files, scripts, or artifacts)
-#   - General AWS automation workflows
-# The ZIP bundle contains the full installer with all required binaries.
-# ------------------------------------------------------------------------------------------
-cd /tmp
-curl -s -o awscliv2.zip \
-    "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
-
-unzip awscliv2.zip
-./aws/install
-
-rm -rf awscliv2.zip aws

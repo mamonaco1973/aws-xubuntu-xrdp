@@ -1,31 +1,58 @@
 #!/bin/bash
 set -euo pipefail
 
-sudo apt install -y xrdp
+# ================================================================================
+# XRDP Installation and XFCE Session Configuration Script
+# ================================================================================
+# Description:
+#   Installs XRDP and replaces the default /etc/xrdp/startwm.sh script so that
+#   all XRDP logins launch XFCE without the untrusted launcher dialog or the
+#   default Ubuntu session. The script also ensures the file has correct
+#   permissions and enables the XRDP service at boot.
+#
+# Notes:
+#   - Uses apt-get for predictable automation behavior.
+#   - Writes a clean startwm.sh that invokes startxfce4.
+#   - Script exits on any error due to 'set -euo pipefail'.
+# ================================================================================
 
-cat >/etc/xrdp/startwm.sh <<'EOF'
+# ================================================================================
+# Step 1: Install XRDP
+# ================================================================================
+sudo apt-get update -y
+sudo apt-get install -y xrdp
+
+# ================================================================================
+# Step 2: Replace /etc/xrdp/startwm.sh with XFCE session launcher
+# ================================================================================
+sudo tee /etc/xrdp/startwm.sh >/dev/null <<'EOF'
 #!/bin/sh
 # xrdp X session start script (c) 2015, 2017, 2021 mirabilos
 # published under The MirOS Licence
-
+#
 # Rely on /etc/pam.d/xrdp-sesman using pam_env to load both
 # /etc/environment and /etc/default/locale to initialise the
 # locale and the user environment properly.
 
 if test -r /etc/profile; then
-        . /etc/profile
+    . /etc/profile
 fi
 
 if test -r ~/.profile; then
-        . ~/.profile
+    . ~/.profile
 fi
 
 startxfce4
 EOF
 
-# Correct permissions
-chmod 755 /etc/xrdp/startwm.sh
+# ================================================================================
+# Step 3: Correct permissions on startwm.sh
+# ================================================================================
+sudo chmod 755 /etc/xrdp/startwm.sh
+echo "NOTE: /etc/xrdp/startwm.sh replaced and permissions set."
 
-echo "NOTE: /etc/xrdp/startwm.sh replaced and permissions set"
-
-systemctl enable xrdp
+# ================================================================================
+# Step 4: Enable XRDP service
+# ================================================================================
+sudo systemctl enable xrdp
+echo "NOTE: XRDP installation and configuration complete."
