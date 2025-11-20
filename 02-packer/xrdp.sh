@@ -58,12 +58,12 @@ sudo systemctl enable xrdp
 echo "NOTE: XRDP installation and configuration complete."
 
 # ---------------------------------------------------------------------------------
-# Deploy PAM script to create home directories on first rstudio login
+# Deploy PAM script to create home directories on first xrdp login
 # ---------------------------------------------------------------------------------
 
 cat <<'EOF' | tee /etc/pam.d/xrdp-mkhomedir.sh > /dev/null
 #!/bin/bash
-echo "NOTE: Creating home directory for user $PAM_USER" >> /tmp/xrdp-mkhomedir.log
+echo "NOTE: Creating home directory for user $PAM_USER" 
 su -c "exit" $PAM_USER
 chmod 700 /home/*
 EOF
