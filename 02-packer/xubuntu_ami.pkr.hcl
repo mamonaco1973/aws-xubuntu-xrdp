@@ -191,6 +191,13 @@ build {
     execute_command = "sudo -E bash '{{.Path}}'"
   }
 
+  # Install remmina
+
+  provisioner "shell" {
+    script          = "./remmina.sh"
+    execute_command = "sudo -E bash '{{.Path}}'"
+  }
+
   # Install Desktop icons
 
   provisioner "shell" {
