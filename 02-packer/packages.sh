@@ -48,7 +48,7 @@ rm ssm.deb
 apt-get install -y less unzip realmd sssd-ad sssd-tools libnss-sss \
     libpam-sss adcli samba samba-common-bin samba-libs oddjob \
     oddjob-mkhomedir packagekit krb5-user nano vim nfs-common \
-    winbind libpam-winbind libnss-winbind stunnel4 
+    winbind libpam-winbind libnss-winbind stunnel4 jq
 
 # ------------------------------------------------------------------------------------------
 # Install Amazon EFS Utilities
