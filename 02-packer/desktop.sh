@@ -51,33 +51,33 @@ done
 
 echo "NOTE: All new users will receive these desktop icons without trust prompts."
 
+# ================================================================================================
+# XFCE Screensaver Default (NEW USERS ONLY)
+# -----------------------------------------------------------------------------------------------
+# - Writes xfce4-screensaver.xml into /etc/skel so only NEW accounts inherit it.
+# - Does NOT modify any existing user home directories.
+# - Sets idle timeout (delay) to 60 minutes.
+# ================================================================================================
 
-# =====================================================================
-# Global XFCE Screensaver Default (60 Minutes)
-# Applies to ALL users, existing and future.
-# =====================================================================
+SKEL_DIR="/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml"
+SKEL_FILE="${SKEL_DIR}/xfce4-screensaver.xml"
 
-TARGET_DIR="/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
-TARGET_FILE="${TARGET_DIR}/xfce4-power-manager.xml"
+# Create the skeleton config directory
+sudo mkdir -p "${SKEL_DIR}"
 
-sudo mkdir -p "$TARGET_DIR"
-
-sudo tee "$TARGET_FILE" >/dev/null <<'EOF'
+# Create the 60-minute default screensaver config
+sudo tee "${SKEL_FILE}" >/dev/null <<'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
-<channel name="xfce4-power-manager" version="1.0">
-  <property name="sleep-display-ac" type="uint" value="3600"/> <!-- 60 min -->
-  <property name="sleep-display-battery" type="uint" value="3600"/>
-  <property name="blank-on-ac" type="int" value="60"/> <!-- 60 min -->
-  <property name="blank-on-battery" type="int" value="60"/>
-  <property name="lock-screen-suspend-hibernate" type="bool" value="true"/>
-  <property name="dpms-enabled" type="bool" value="true"/>
+
+<channel name="xfce4-screensaver" version="1.0">
+  <property name="saver" type="empty">
+    <property name="mode" type="int" value="0"/>
+    <property name="idle-activation" type="empty">
+      <!-- Delay is in MINUTES; 60 = 1 hour -->
+      <property name="delay" type="int" value="60"/>
+    </property>
+  </property>
 </channel>
 EOF
 
-sudo mkdir -p /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
-
-sudo cp /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-power-manager.xml \
-        /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/
-
-
-echo "NOTE: Global 60-minute screensaver applied."
+echo "NOTE: Default XFCE screensaver timeout set to 60 minutes for NEW users."
