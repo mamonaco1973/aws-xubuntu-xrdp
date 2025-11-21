@@ -23,9 +23,9 @@ project, this solution automatically provisions:
    - Domain users generated from a template with random passwords  
    - Central authentication for Linux and Windows clients  
 
-3. **Domain-Joined Linux Desktop Servers (Terraform)**
-   - Deploys multiple Xubuntu XRDP instances using the Packer-built AMI  
-   - Automatically joins AD using cloud-init  
+3. **Domain-Joined Linux Desktop Server (Terraform)**
+   - Deploys Xubuntu XRDP instance using the Packer-built AMI  
+   - Automatically joins AD during boot 
    - Consistent user profiles via `/etc/skel` provisioning  
 
 4. **Amazon EFS for Persistent Home Directories**
