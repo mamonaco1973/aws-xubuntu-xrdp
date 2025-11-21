@@ -52,8 +52,8 @@ If this is your first time watching our content, we recommend starting with this
 ## Download this Repository
 
 ```bash
-git clone https://github.com/mamonaco1973/aws-xubuntu.git
-cd aws-xubuntu
+git clone https://github.com/mamonaco1973/aws-xubuntu-xrdp.git
+cd aws-xubuntu-xrdp
 ```
 
 ---
