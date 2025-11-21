@@ -49,7 +49,35 @@ for src in "${APPS[@]}"; do
   fi
 done
 
-# ================================================================================
-# Completion Message
-# ================================================================================
 echo "NOTE: All new users will receive these desktop icons without trust prompts."
+
+
+# =====================================================================
+# Global XFCE Screensaver Default (60 Minutes)
+# Applies to ALL users, existing and future.
+# =====================================================================
+
+TARGET_DIR="/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
+TARGET_FILE="${TARGET_DIR}/xfce4-power-manager.xml"
+
+sudo mkdir -p "$TARGET_DIR"
+
+sudo tee "$TARGET_FILE" >/dev/null <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xfce4-power-manager" version="1.0">
+  <property name="sleep-display-ac" type="uint" value="3600"/> <!-- 60 min -->
+  <property name="sleep-display-battery" type="uint" value="3600"/>
+  <property name="blank-on-ac" type="int" value="60"/> <!-- 60 min -->
+  <property name="blank-on-battery" type="int" value="60"/>
+  <property name="lock-screen-suspend-hibernate" type="bool" value="true"/>
+  <property name="dpms-enabled" type="bool" value="true"/>
+</channel>
+EOF
+
+sudo mkdir -p /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
+
+sudo cp /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-power-manager.xml \
+        /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/
+
+
+echo "NOTE: Global 60-minute screensaver applied."
