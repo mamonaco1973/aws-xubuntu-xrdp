@@ -223,6 +223,8 @@ Follow these steps to provision a new user in the Active Directory domain and va
    - Open the a RDP session to the desktop environment
    - Log in with the new AD credentials.  
 
+![mcloud](xrdp-mcloud.png)
+
 ### Clean Up Infrastructure  
 
 When you are finished testing, you can remove all provisioned resources with:  
