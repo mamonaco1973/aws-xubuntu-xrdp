@@ -163,6 +163,66 @@ As part of this project, when the domain controller is provisioned, a set of sam
 The **`uidNumber`** (User ID) and **`gidNumber`** (Group ID) attributes are critical when integrating **Active Directory** with **Linux systems**, particularly in environments where **SSSD** ([System Security Services Daemon](https://sssd.io/)) or similar services are used for identity management. These attributes allow Linux hosts to recognize and map Active Directory users and groups into the **POSIX** (Portable Operating System Interface) user and group model.
 
 
+### Creating a New Desktop User
+
+Follow these steps to provision a new user in the Active Directory domain and validate their access to the Desktop.
+
+1. **Connect to the Domain Controller**  
+   - Log into the **`windows-ad-admin`** server via Remote Desktop (RDP).  
+   - Use the `rpatel` or `jsmith` credentials that were provisioned during cluster deployment.  
+
+2. **Launch Active Directory Users and Computers (ADUC)**  
+   - From the Windows Start menu, open **“Active Directory Users and Computers.”**  
+   - Enable **Advanced Features** under the **View** menu. This ensures you can access the extended attribute tabs (e.g., UID/GID mappings).  
+
+3. **Navigate to the Users Organizational Unit (OU)**  
+   - In the left-hand tree, expand the domain (e.g., `mcloud.mikecloud.com`).  
+   - Select the **Users** OU where all cluster accounts are managed.  
+
+4. **Create a New User Object**  
+   - Right-click the Users OU and choose **New → User.**  
+   - Provide the following:  
+     - **Full Name:** Descriptive user name (e.g., “Mike Cloud”).  
+     - **User Logon Name (User Principal Name / UPN):** e.g., `mcloud@mcloud.mikecloud.com`.  
+     - **Initial Password:** Set an initial password.
+
+![Windows](windows.png)
+
+5. **Assign a Unique UID Number**  
+   - Open **PowerShell** on the AD server.  
+   - Run the script located at:  
+     ```powershell
+     Z:\efs\aws-xubuntu-xrdp\06-utils\getNextUID.bat
+     ```  
+   - This script returns the next available **`uidNumber`** to assign to the new account.  
+
+6. **Configure Advanced Attributes**  
+   - In the new user’s **Properties** dialog, open the **Attribute Editor** tab.  
+   - Set the following values:  
+     - `gidNumber` → **10001** (the shared GID for the `mcloud-users` group).  
+     - `uid` → match the user’s AD login ID (e.g., `rpatel`).  
+     - `uidNumber` → the unique numeric value returned from `getNextUID.ps1`.  
+
+7. **Add Group Memberships**  
+   - Go to the **Member Of** tab.  
+   - Add the user to the following groups:  
+     - **mcloud-users** → grants standard Desktop access.  
+     - **us** (or other geographic/departmental group as applicable).  
+
+8. **Validate User on Linux**  
+   - Open an **AWS Systems Manager (SSM)** session to the **`efs-samba-gateway`** instance.  
+   - Run the following command to confirm the user’s identity mapping:  
+     ```bash
+     id mcloud
+     ```  
+   - Verify that the output shows the correct **UID**, **GID**, and group memberships (e.g., `mcloud-users`).  
+
+![Linux](linux.png)
+
+9. **Validate Desktop Access**  
+   - Open the a RDP session to the desktop environment
+   - Log in with the new AD credentials.  
+
 ### Clean Up Infrastructure  
 
 When you are finished testing, you can remove all provisioned resources with:  
