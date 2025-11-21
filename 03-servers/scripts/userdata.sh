@@ -237,6 +237,18 @@ git clone https://github.com/mamonaco1973/aws-xubuntu-xrdp.git
 chmod -R 775 aws-xubuntu-xrdp
 chgrp -R mcloud-users aws-xubuntu-xrdp
 
+git clone https://github.com/mamonaco1973/aws-setup.git
+chmod -R 775 aws-setup
+chgrp -R mcloud-users aws-setup
+
+git clone https://github.com/mamonaco1973/azure-setup.git
+chmod -R 775 azure-setup
+chgrp -R mcloud-users azure-setup
+
+git clone https://github.com/mamonaco1973/gcp-setup.git
+chmod -R 775 gcp-setup
+chgrp -R mcloud-users gcp-setup
+
 # =================================================================================
 # End of Script
 # =================================================================================
