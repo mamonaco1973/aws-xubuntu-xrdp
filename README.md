@@ -1,7 +1,8 @@
 # AWS Xubuntu XRDP Cloud Development Environment  
 
 This project provides a **complete cloud-based Linux desktop development environment**
-powered by **Xubuntu + XRDP**, **Mini-Active Directory**, and **Amazon EFS**.  
+powered by **Xubuntu + XRDP**, **Mini-Active Directory**, and **Amazon EFS** run on AWS.
+
 It is designed as a **universal dev workstation** that contains the full superset of
 tools, dependencies, and configurations used across all build projects on my channel.
 
