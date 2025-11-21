@@ -210,7 +210,7 @@ Follow these steps to provision a new user in the Active Directory domain and va
      - **us** (or other geographic/departmental group as applicable).  
 
 8. **Validate User on Linux**  
-   - Open an **AWS Systems Manager (SSM)** session to the **`efs-samba-gateway`** instance.  
+   - Open an **AWS Systems Manager (SSM)** session to the **`xubuntu-instance`** instance.  
    - Run the following command to confirm the user’s identity mapping:  
      ```bash
      id mcloud
