@@ -71,10 +71,14 @@ sudo tee "${SKEL_FILE}" >/dev/null <<'EOF'
 
 <channel name="xfce4-screensaver" version="1.0">
   <property name="saver" type="empty">
-    <property name="mode" type="int" value="0"/>
+    <property name="mode" type="int" value="2"/>
     <property name="idle-activation" type="empty">
-      <!-- Delay is in MINUTES; 60 = 1 hour -->
       <property name="delay" type="int" value="60"/>
+    </property>
+    <property name="themes" type="empty">
+      <property name="list" type="array">
+        <value type="string" value="screensavers-xfce-floaters"/>
+      </property>
     </property>
   </property>
 </channel>
