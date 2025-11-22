@@ -23,6 +23,7 @@ APPS=(
   /usr/share/applications/firefox.desktop
   /usr/share/applications/code.desktop
   /usr/share/applications/postman.desktop
+  /usr/share/applications/onlyoffice-desktopeditors.desktop
 )
 
 SKEL_DESKTOP="/etc/skel/Desktop"

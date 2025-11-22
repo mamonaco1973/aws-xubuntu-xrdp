@@ -191,6 +191,14 @@ build {
     execute_command = "sudo -E bash '{{.Path}}'"
   }
 
+  
+  # Install OnlyOffice
+
+  provisioner "shell" {
+    script          = "./onlyoffice.sh"
+    execute_command = "sudo -E bash '{{.Path}}'"
+  }
+
   # Install Desktop icons
 
   provisioner "shell" {
