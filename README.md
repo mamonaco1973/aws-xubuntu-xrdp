@@ -65,7 +65,7 @@ cd aws-xubuntu-xrdp
 Run [check_env](check_env.sh) to validate your environment, then run [apply](apply.sh) to provision the infrastructure.
 
 ```bash
-develop-vm:~/aws-efs$ ./apply.sh
+develop-vm:~/aws-xubuntu-xrdp$ ./apply.sh
 NOTE: Validating that required commands are found in your PATH.
 NOTE: aws is found in the current PATH.
 NOTE: terraform is found in the current PATH.
