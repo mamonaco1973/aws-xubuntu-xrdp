@@ -176,8 +176,8 @@ chmod 700 /home/* || true
 
 cd /efs
 git clone https://github.com/mamonaco1973/aws-xubuntu-xrdp.git
-chmod -R 775 aws-mate-xrdp
-chgrp -R mcloud-users aws-mate-xrdp
+chmod -R 775 aws-xubuntu-xrdp
+chgrp -R mcloud-users aws-xubuntu-xrdp
 
 git clone https://github.com/mamonaco1973/aws-setup.git
 chmod -R 775 aws-setup
