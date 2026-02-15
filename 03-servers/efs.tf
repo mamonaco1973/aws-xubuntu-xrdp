@@ -11,7 +11,7 @@
 # security groups or CIDR ranges (e.g., your VPC subnets).
 # ===================================================================
 resource "aws_security_group" "efs_sg" {
-  name        = "efs-sg"
+  name        = "xubuntu-efs-sg"
   description = "Security group allowing NFS traffic to EFS"
   vpc_id      = data.aws_vpc.ad_vpc.id
 
@@ -46,11 +46,11 @@ resource "aws_security_group" "efs_sg" {
 # - encrypted: Enables at-rest encryption for security.
 # ===================================================================
 resource "aws_efs_file_system" "efs" {
-  creation_token = "mcloud-efs"
+  creation_token = "xubuntu-efs"
   encrypted      = true
 
   tags = {
-    Name = "mcloud-efs"
+    Name = "xubuntu-efs"
   }
 }
 
