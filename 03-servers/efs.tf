@@ -32,7 +32,7 @@ resource "aws_security_group" "efs_sg" {
   }
 
   tags = {
-    Name = "efs-sg"
+    Name = "xubuntu-efs-sg"
   }
 }
 
