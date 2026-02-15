@@ -62,7 +62,7 @@ mate_dns="$(get_public_dns_by_name_tag "xubuntu-instance")"
 # ================================================================================
 
 echo "==============================================================================="
-echo "VALIDATION RESULTS: AD + MATE DESKTOP"
+echo "VALIDATION RESULTS: AD + XUBUNTU DESKTOP"
 echo "==============================================================================="
 echo
 
