@@ -46,8 +46,7 @@ resource "aws_instance" "windows_ad_instance" {
   # IAM Instance Profile
   # ---------------------------------------------------------------------------
   # Grants access to AWS services (Secrets Manager, SSM).
-  iam_instance_profile =
-    aws_iam_instance_profile.ec2_secrets_profile.name
+  iam_instance_profile = aws_iam_instance_profile.ec2_secrets_profile.name
 
 
   # ---------------------------------------------------------------------------
