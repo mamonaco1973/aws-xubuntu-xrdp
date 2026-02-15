@@ -73,9 +73,9 @@ else
 fi
 
 if [ -z "${mate_dns}" ]; then
-  print_kv "MATE Desktop Host" "NOT FOUND (Name=xubuntu-instance)"
+  print_kv "Xubuntu Desktop Host" "NOT FOUND (Name=xubuntu-instance)"
 else
-  print_kv "MATE Desktop Host" "${mate_dns}"
+  print_kv "Xubuntu Desktop Host" "${mate_dns}"
 fi
 
 echo
