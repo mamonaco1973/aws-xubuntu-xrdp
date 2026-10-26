@@ -108,7 +108,8 @@ AMI, and phase 3 always uses the newest one. After phase 3, the desktop needs
 about **5 minutes** to mount EFS and join the domain, and the Windows host
 about **10 minutes** to join and reboot.
 
-`apply.sh` ends by running `validate.sh`, which prints the two hosts:
+`apply.sh` ends by running `validate.sh`, which prints the two hosts and a
+login:
 
 ```
 ===============================================================================
@@ -118,15 +119,21 @@ VALIDATION RESULTS: AD + XUBUNTU DESKTOP
 Windows AD Admin Host:       ec2-203-0-113-10.compute-1.amazonaws.com
 Xubuntu Desktop Host:        ec2-203-0-113-20.compute-1.amazonaws.com
 
+Sign in:                     jsmith / orange-481920
+                             Desktop: jsmith. Windows: MCLOUD\jsmith.
+                             Other users: <user>_ad_credentials_xubuntu
+                             in Secrets Manager.
+
 ===============================================================================
 ```
 
 ## Try it
 
-1. Get a user's password from Secrets Manager:
+1. `validate.sh` prints jsmith's password. For another user, get it from
+   Secrets Manager:
 
    ```bash
-   aws secretsmanager get-secret-value --secret-id jsmith_ad_credentials_xubuntu \
+   aws secretsmanager get-secret-value --secret-id edavis_ad_credentials_xubuntu \
      --query SecretString --output text | jq -r .password
    ```
 
