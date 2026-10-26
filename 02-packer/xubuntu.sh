@@ -13,7 +13,7 @@ set -euo pipefail
 #
 # Notes:
 #   - Uses apt-get for stable automation behavior.
-#   - XFCE background modification replaces the shapes wallpaper with leaves.
+#   - The default wallpaper is switched to the Xfce leaves wallpaper.
 #   - Script exits immediately on any error due to 'set -euo pipefail'.
 # ================================================================================
 
@@ -54,12 +54,9 @@ sudo mkdir -p /etc/skel/Desktop
 # ================================================================================
 # Step 5: Replace default XFCE background image
 # ================================================================================
-cd /usr/share/backgrounds/xfce
-
-# Backup the original wallpaper to preserve system assets
-sudo mv xfce-shapes.svg xfce-shapes.svg.bak
-
-# Replace wallpaper with a known-good XFCE SVG file
-sudo cp xfce-leaves.svg xfce-shapes.svg
+# Xubuntu sets no wallpaper in its xfconf defaults; xfdesktop falls back to
+# /usr/share/xfce4/backdrops/xubuntu-wallpaper.png, a symlink to the release
+# artwork. Point it at the Xfce leaves wallpaper instead.
+sudo ln -sf /usr/share/backgrounds/xfce/xfce-leaves.svg \
+  /usr/share/xfce4/backdrops/xubuntu-wallpaper.png
 echo "NOTE: Xubuntu minimal desktop and XFCE enhancements installation complete."
-

@@ -1,9 +1,9 @@
 # ==============================================================================
-# Packer Build: Xubuntu AMI on Ubuntu 24.04 (Noble)
+# Packer Build: Xubuntu AMI on Ubuntu 26.04 (Resolute)
 # ------------------------------------------------------------------------------
 # Purpose:
 #   - Build a custom AMI for Xubuntu + XRDP.
-#   - Start from Canonical Ubuntu 24.04 (Noble) AMI.
+#   - Start from Canonical Ubuntu 26.04 (Resolute) AMI.
 #   - Run provisioning scripts to install desktop and tools.
 #   - Output a timestamped AMI for Terraform or EC2 launches.
 #
@@ -29,13 +29,13 @@ packer {
 
 
 # ------------------------------------------------------------------------------
-# Data Source: Base Ubuntu 24.04 AMI
+# Data Source: Base Ubuntu 26.04 AMI
 # ------------------------------------------------------------------------------
-# Fetches the most recent Canonical-owned Ubuntu 24.04 (Noble) AMI.
+# Fetches the most recent Canonical-owned Ubuntu 26.04 (Resolute) AMI.
 # ------------------------------------------------------------------------------
-data "amazon-ami" "ubuntu_2404" {
+data "amazon-ami" "ubuntu_2604" {
   filters = {
-    name                = "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"
+    name                = "ubuntu/images/hvm-ssd-gp3/ubuntu-resolute-26.04-amd64-server-*"
     virtualization-type = "hvm"
     root-device-type    = "ebs"
   }
@@ -77,7 +77,7 @@ variable "subnet_id" {
 source "amazon-ebs" "xubuntu_ami" {
   region        = var.region
   instance_type = var.instance_type
-  source_ami    = data.amazon-ami.ubuntu_2404.id
+  source_ami    = data.amazon-ami.ubuntu_2604.id
   ssh_username  = "ubuntu"
   ami_name      = "xubuntu_ami_${replace(timestamp(), ":", "-")}"
   ssh_interface = "public_ip"
